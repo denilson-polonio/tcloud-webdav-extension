@@ -74,8 +74,9 @@ in the sidebar. Open it for live, copy-ready commands tailored to your host and 
 The bridge needs **Node.js 18 or newer** and **no external packages** (it uses only Node's
 built-in `http`, `https`, `url`, and `crypto` modules).
 
-Download `bridge/tcloud-webdav-bridge.js` (the extension page has a one-click download
-button), copy it to the machine that should host the drive, and start it:
+Get `bridge/tcloud-webdav-bridge.js` onto the machine that should host the drive — the panel's
+**Download the bridge** button opens it on GitHub (use *Download raw file*), or just grab it from
+this repo — then start it:
 
 ```bash
 TCLOUD_URL="https://your-tcloud.example" \
@@ -220,10 +221,13 @@ button — so keep the bridge file in the repo alongside each release.
 
 ## Internationalization
 
-UI strings live in `i18n/`, keyed by their English text. English (`en.json`) is the primary
-language and Italian (`it.json`) is included as an extra; both files must contain the exact
-same set of keys. To add a language, copy `en.json` to `i18n/<lang>.json` and translate the
-values, leaving the keys unchanged.
+UI strings live in `i18n/`, keyed by their English text — English (`en.json`) is the primary
+language and Italian (`it.json`) is included as an extra; both files contain the exact same set
+of keys. Because TCloud serves the app with a strict Content-Security-Policy (`connect-src 'self'`),
+an extension can't fetch its translation files from GitHub at runtime, so `index.js` ships with
+both dictionaries **embedded** (generated from these JSON files). The `i18n/` files remain the
+source of truth: edit them, then re-embed into `index.js` when you change a translation. To add a
+language, copy `en.json` to `i18n/<lang>.json`, translate the values, and embed it the same way.
 
 ---
 

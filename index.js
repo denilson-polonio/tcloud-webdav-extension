@@ -1,29 +1,18 @@
 (function () {
   'use strict';
 
-  var STRINGS = {};
-  function et(key) { return (STRINGS && STRINGS[key]) || key; }
+  var I18N = {"en":{"Network Drive":"Network Drive","Mount your TCloud as a network drive on your computer.":"Mount your TCloud as a network drive on your computer.","TCloud can't open a network share from inside the browser, so this extension pairs with a tiny bridge you run yourself. The bridge speaks WebDAV to your operating system and talks to TCloud on your behalf — every OS can mount a WebDAV drive natively, with no extra software.":"TCloud can't open a network share from inside the browser, so this extension pairs with a tiny bridge you run yourself. The bridge speaks WebDAV to your operating system and talks to TCloud on your behalf — every OS can mount a WebDAV drive natively, with no extra software.","Bridge host":"Bridge host","Bridge port":"Bridge port","1 · Run the bridge":"1 · Run the bridge","Run this where the bridge should live — your Raspberry Pi is perfect. It needs Node.js 18+ and no extra packages.":"Run this where the bridge should live — your Raspberry Pi is perfect. It needs Node.js 18+ and no extra packages.","Download the bridge":"Download the bridge","2 · Mount the drive":"2 · Mount the drive","Windows":"Windows","macOS":"macOS","Linux":"Linux","rclone":"rclone","On Windows, allow Basic auth over HTTP once (see the README) or the drive won't connect.":"On Windows, allow Basic auth over HTTP once (see the README) or the drive won't connect.","Why WebDAV and not SMB?":"Why WebDAV and not SMB?","SMB needs the full Samba protocol stack, a privileged port and per-OS credential quirks. WebDAV is plain HTTP, maps cleanly onto TCloud's file API, and Windows, macOS, Linux and phones all mount it out of the box.":"SMB needs the full Samba protocol stack, a privileged port and per-OS credential quirks. WebDAV is plain HTTP, maps cleanly onto TCloud's file API, and Windows, macOS, Linux and phones all mount it out of the box.","Copy":"Copy","Copied!":"Copied!","Could not download the bridge.":"Could not download the bridge.","Keep the bridge on your local network and protect it with a password — it serves your decrypted files.":"Keep the bridge on your local network and protect it with a password — it serves your decrypted files."},"it":{"Network Drive":"Unità di rete","Mount your TCloud as a network drive on your computer.":"Monta il tuo TCloud come unità di rete sul computer.","TCloud can't open a network share from inside the browser, so this extension pairs with a tiny bridge you run yourself. The bridge speaks WebDAV to your operating system and talks to TCloud on your behalf — every OS can mount a WebDAV drive natively, with no extra software.":"TCloud non può aprire una condivisione di rete dall'interno del browser, quindi questa estensione si affianca a un piccolo bridge che avvii tu stesso. Il bridge comunica in WebDAV con il tuo sistema operativo e dialoga con TCloud per tuo conto — ogni sistema operativo può montare un'unità WebDAV in modo nativo, senza software aggiuntivo.","Bridge host":"Host del bridge","Bridge port":"Porta del bridge","1 · Run the bridge":"1 · Avvia il bridge","Run this where the bridge should live — your Raspberry Pi is perfect. It needs Node.js 18+ and no extra packages.":"Esegui questo comando dove vuoi che risieda il bridge — il tuo Raspberry Pi è perfetto. Richiede Node.js 18+ e nessun pacchetto aggiuntivo.","Download the bridge":"Scarica il bridge","2 · Mount the drive":"2 · Monta l'unità","Windows":"Windows","macOS":"macOS","Linux":"Linux","rclone":"rclone","On Windows, allow Basic auth over HTTP once (see the README) or the drive won't connect.":"Su Windows, abilita una volta l'autenticazione Basic su HTTP (vedi il README) o l'unità non si connetterà.","Why WebDAV and not SMB?":"Perché WebDAV e non SMB?","SMB needs the full Samba protocol stack, a privileged port and per-OS credential quirks. WebDAV is plain HTTP, maps cleanly onto TCloud's file API, and Windows, macOS, Linux and phones all mount it out of the box.":"SMB richiede l'intero stack del protocollo Samba, una porta privilegiata e gestioni delle credenziali diverse per ogni sistema operativo. WebDAV è semplice HTTP, si integra in modo pulito con l'API dei file di TCloud, e Windows, macOS, Linux e telefoni lo montano tutti senza configurazioni.","Copy":"Copia","Copied!":"Copiato!","Could not download the bridge.":"Impossibile scaricare il bridge.","Keep the bridge on your local network and protect it with a password — it serves your decrypted files.":"Mantieni il bridge sulla tua rete locale e proteggilo con una password — distribuisce i tuoi file decifrati."}};
 
   var lang = 'en';
   try { lang = localStorage.getItem('tcloud_lang') || 'en'; } catch (e) {}
+  var STRINGS = I18N[lang] || I18N.en || {};
+  function et(key) { return (STRINGS && STRINGS[key]) || (I18N.en && I18N.en[key]) || key; }
 
-  function rawBase() {
+  function repoBase() {
     if (extension && extension.repo && extension.ref) {
-      return 'https://raw.githubusercontent.com/' + extension.repo + '/' + extension.ref;
+      return 'https://github.com/' + extension.repo + '/blob/' + extension.ref;
     }
     return null;
-  }
-
-  async function loadStrings() {
-    var base = rawBase();
-    if (!base) return;
-    for (var i = 0; i < 2; i++) {
-      var code = i === 0 ? lang : 'en';
-      try {
-        var res = await fetch(base + '/i18n/' + code + '.json');
-        if (res.ok) { STRINGS = await res.json(); return; }
-      } catch (e) {}
-    }
   }
 
   function serverOrigin() {
@@ -61,31 +50,10 @@
     return '<button data-tab="' + key + '" class="modal-btn' + (active ? ' primary' : '') + '">' + api.esc(label) + '</button>';
   }
 
-  async function downloadBridge(api) {
-    var base = rawBase();
-    var path = '/bridge/tcloud-webdav-bridge.js';
-    if (base) {
-      try {
-        var res = await fetch(base + path);
-        if (res.ok) {
-          var text = await res.text();
-          var blob = new Blob([text], { type: 'text/javascript' });
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = 'tcloud-webdav-bridge.js';
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-          return;
-        }
-      } catch (e) {}
-    }
-    if (extension && extension.repo && extension.ref) {
-      window.open('https://github.com/' + extension.repo + '/blob/' + extension.ref + path, '_blank');
-    } else {
-      api.toast(et('Could not download the bridge.'));
-    }
+  function downloadBridge(api) {
+    var base = repoBase();
+    if (base) { window.open(base + '/bridge/tcloud-webdav-bridge.js', '_blank'); }
+    else { api.toast(et('Could not download the bridge.')); }
   }
 
   function bind(api, origin) {
@@ -189,12 +157,10 @@
     bind(api, origin);
   }
 
-  loadStrings().then(function () {
-    TCloudExt.registerNav({
-      id: 'network-drive',
-      label: et('Network Drive'),
-      emoji: '\uD83D\uDDC2\uFE0F',
-      onClick: function (api) { page(api); }
-    });
+  TCloudExt.registerNav({
+    id: 'network-drive',
+    label: et('Network Drive'),
+    emoji: '\uD83D\uDDC2\uFE0F',
+    onClick: function (api) { page(api); }
   });
 })();
