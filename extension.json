@@ -1,0 +1,9 @@
+{
+  "id": "network-drive",
+  "name": "Webdav for TCloud",
+  "version": "1.0.0",
+  "entry": "index.js",
+  "description": "Mount your TCloud as a network drive on Windows, macOS, Linux or your phone over WebDAV.",
+  "author": "Denilson Polonio",
+  "homepage": "https://github.com/denilson-polonio/tcloud-webdav-extension"
+}

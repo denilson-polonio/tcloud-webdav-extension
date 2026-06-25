@@ -1,0 +1,22 @@
+{
+  "Network Drive": "Network Drive",
+  "Mount your TCloud as a network drive on your computer.": "Mount your TCloud as a network drive on your computer.",
+  "TCloud can't open a network share from inside the browser, so this extension pairs with a tiny bridge you run yourself. The bridge speaks WebDAV to your operating system and talks to TCloud on your behalf — every OS can mount a WebDAV drive natively, with no extra software.": "TCloud can't open a network share from inside the browser, so this extension pairs with a tiny bridge you run yourself. The bridge speaks WebDAV to your operating system and talks to TCloud on your behalf — every OS can mount a WebDAV drive natively, with no extra software.",
+  "Bridge host": "Bridge host",
+  "Bridge port": "Bridge port",
+  "1 · Run the bridge": "1 · Run the bridge",
+  "Run this where the bridge should live — your Raspberry Pi is perfect. It needs Node.js 18+ and no extra packages.": "Run this where the bridge should live — your Raspberry Pi is perfect. It needs Node.js 18+ and no extra packages.",
+  "Download the bridge": "Download the bridge",
+  "2 · Mount the drive": "2 · Mount the drive",
+  "Windows": "Windows",
+  "macOS": "macOS",
+  "Linux": "Linux",
+  "rclone": "rclone",
+  "On Windows, allow Basic auth over HTTP once (see the README) or the drive won't connect.": "On Windows, allow Basic auth over HTTP once (see the README) or the drive won't connect.",
+  "Why WebDAV and not SMB?": "Why WebDAV and not SMB?",
+  "SMB needs the full Samba protocol stack, a privileged port and per-OS credential quirks. WebDAV is plain HTTP, maps cleanly onto TCloud's file API, and Windows, macOS, Linux and phones all mount it out of the box.": "SMB needs the full Samba protocol stack, a privileged port and per-OS credential quirks. WebDAV is plain HTTP, maps cleanly onto TCloud's file API, and Windows, macOS, Linux and phones all mount it out of the box.",
+  "Copy": "Copy",
+  "Copied!": "Copied!",
+  "Could not download the bridge.": "Could not download the bridge.",
+  "Keep the bridge on your local network and protect it with a password — it serves your decrypted files.": "Keep the bridge on your local network and protect it with a password — it serves your decrypted files."
+}
